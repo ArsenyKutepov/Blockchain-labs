@@ -1,0 +1,111 @@
+# wif.py
+from bitcoinlib.keys import Key, HDKey
+
+
+def main():
+    # Пример данных из Electrum
+    electrum_data = {
+    "tb1qcny2jrpfw6v2u55wg3epfhq9xwv5xeu27f28np": "p2wpkh:cT6GYd2o2jCxpcg6isvfhNiVygSwAHjKhL2vaa5dyye3ehjKxo3x",
+    "tb1q0v7epj34egkhmt2zn8d8uml6twy94ryrhegmuj": "p2wpkh:cTEJgKCNXbSaoEF74Hk86nrZ3AJ37byjCG8wvQgGHMbqitWZgd5e",
+    "tb1qkanf6tq6fh8mxuszf5626cycgwcezj4mhawx84": "p2wpkh:cNnWaXD2vizxp4neiv9eQ2pQXwMwvX4SMQTuEWFS9Tyfp1B5AZqS",
+    "tb1qr5cdqmrhu3vn2tdwt949w9973xs8u06n230s0a": "p2wpkh:cP4esENsKxDzgeATUsb7U4Y9z1XpSicRrDMoMzG52q2eAGd8pa5C",
+    "tb1q4tz6g60scl5nd6fwkfgjtnmm0mly63ummwyyrw": "p2wpkh:cTnhFzHGGhMJw6nVFQLbXXbWxLnfmxEYwTaMmxrvgJ6DV4FFZtHJ",
+    "tb1qmajsdj9lvqskk3q2qyc42n7v65ftqygd0ne02f": "p2wpkh:cVt3zQoqdQg57YvKHQktN759TqmVCMKp5QGaMSEsAUrhgKqeEZkL",
+    "tb1qrnthktq8dkp203hc0mez9sk2a8fwpnk9xm5z33": "p2wpkh:cRmFLkaUgKydUokz6iRezsYpQcBFwqUcH8pHh9recCK8Dwt1Q3bQ",
+    "tb1qsmhhkazhx4ugth0uumk0dg7l2xfrstq5pvtruu": "p2wpkh:cTbac3ztwKSaYwGtLDK69DWBMd6sekADwZjFDYVm9gPmpKkCxL4G",
+    "tb1q554uvt6wxmmey8uszqdynughhlhy5hfpf2chuh": "p2wpkh:cRsBoud94xNnHaEbxhejRWURHgTwGkVxnLyDRf1mrEqfyVRpvYt1",
+    "tb1qhaw0l7alvrsqq7lrhl6mfc62lgx3clgm7en4u9": "p2wpkh:cNgrmcwYs19z6PWP9dbxqeqT46YzE5anyqjqTrVLfcm9RtRJmLzP",
+    "tb1qcjf0jc7xfa4zy3609jd59n0rsdcyl7vccsqzcf": "p2wpkh:cUM2XtMkFYHpHZWkWAoXza65FZcR8UTq9C2myQQjhw2KBY9DHW1s",
+    "tb1qs06wqrkf3c4jlnhucfgagksm4cpujuhjmdzgts": "p2wpkh:cS6wctbimfbz3MohhycHRQ8mLkxDbo7cRxDh7uY3HcUEhS9TpLno",
+    "tb1qsvuuyd3xeckxwj5xl5tcqkdlcmx59gwkvrfse0": "p2wpkh:cNdKmJh4etDciTC2Mi2Gt3Kr5LAyQN6wasrG6dRJGnPB1XX3o8on",
+    "tb1qscsdmvpfdnxy2rjy44896h48fl54kh3zqmn49r": "p2wpkh:cMvtGsxrCfr4uswrQjefnMCcofT77dh8dhfnjtxkS9DwsjwwXkD7",
+    "tb1q794hhpp5mlcghrvku66j9ae8kfda9zqmepsryv": "p2wpkh:cToeuodTMiKAdpytUfcCraKiFMY92WD7oUH6xenYbv7umH52rjKi",
+    "tb1qx5yt95x696wancdddcateutueweecgrsq3n6sr": "p2wpkh:cVD9dVQyXBCfvjPUPDTbDnponnJt6sGqb7fKxvefhj68hy8Ardf5",
+    "tb1q79yp6w4dvurehvxmcysmk486a62q2vjpszs8z0": "p2wpkh:cSmyhm884bDmFoQ9iEiGv8bxKnJS9dhLHy9mTnfzeEDadqxafFjy",
+    "tb1qs5287c3skgaxvh3ta7uptkcgyyc0vuk3znxgqn": "p2wpkh:cQxLVre4TndmcYtGBqW2JwheyJx3i9jLDXYv3oQ2tC4nw7Txqg1t",
+    "tb1qumnvvpegly3zrgdhykajualtlr3h90v7cyjyng": "p2wpkh:cT9wRa2QwyQUwk25W49xPoh82htLDm24qfVKkikoudpn6ex4g8LA",
+    "tb1q73hunqucu0apdrj9ya5zv7fkfmf0nff97mc7sy": "p2wpkh:cQC8M6jMnmQ76zPiCgixjXTuztubxqbQXYxe3QryijgXbhjpcCEG",
+    "tb1qu77jdjc9mkmynlat4fatpqpcdd5vhkla7wu2uq": "p2wpkh:cRStdUEa2hxvVGpPoa853QN7DFpSP9EVa9Y29TXuM6ekQYtmVJTt",
+    "tb1qy54wxfge2p26qrdkxugz53lxm49cyjuzqnljjk": "p2wpkh:cRYZ7Kdu8XqaE6yjB241PazG88NKdtpNiyEr1Z2cCmfcDD11jPUm",
+    "tb1qg9dz77lvn2dw9gecqzq0u00303vu2mpmh0x6ny": "p2wpkh:cUJ2EthSdZSgemZj6uAywYJX6p1YnAZ4J4gsJj7t7uCFV67tW1fR",
+    "tb1q674040zl4cz5du7z9fap439ruzcsjjxguuwdan": "p2wpkh:cNbjmyHRN5njKjLaV2D9Q43vAyzvBtvEpmowL5PAWRZ1o56rdWPX",
+    "tb1qcsp77js75d7mfm4wnvmq8qzp3n5tw9yazj03kq": "p2wpkh:cP9uJoZvXQfVU3xzYu2cWsDLKkFkuSHscYQU55wib4FRCQBv56ua",
+    "tb1qk2x8n279pe6cxs3sugh7zhpaaftxpe424mjc7y": "p2wpkh:cUpMAEaq7YgQH8jexrkiqg194omjr3BGQ3AMxLawcjjv6bD3nKQ2",
+    "tb1q0tm4y7hhwkzqc25h3qj4re0y0j0ynjgnuuj272": "p2wpkh:cQnVE89R4GQ42ksiuXsacmgFUHwWaMcoFfXfGCGDLSox4JgitHNX",
+    "tb1qscztpx4gfgu7ehlvsl8x9mn5fx4sw2qer64c0l": "p2wpkh:cSUF2mx7aS24GUVih11iuuh7U3whTvWJSioGsyGEC1WzirjrZM13",
+    "tb1qda4x4jg7zlljdtsdmh5vafc0ze50w26rkjz20x": "p2wpkh:cSD48kQAzS2enbVxT69yezxMQvFzT5ZSEHQa6o2mu3cxjBXndcbJ",
+    "tb1qnuu6qs5vh58tlcm6hw99f23remjre2hr7ztk5y": "p2wpkh:cQUKhzaUXGQmcaUsr8RFPNg6NiFV8T8Qre8nTAKFiMCs7BBbmqeR",
+    "tb1qhsfdj0vu0zvveu4fkg9c5gu6dnjevapm4lw0wr": "p2wpkh:cUTpoiQiZGXZwV9F7wzYCwDHbD9EmP98C5iZkKGGHbCU2aYG1Jm2"
+}
+
+    target_addr = input("Введите ваш tb1q адрес: ").strip().lower()
+
+    for addr, wif in electrum_data.items():
+        if addr.lower() == target_addr:
+            # Убираем префикс типа (p2wpkh:)
+            if ":" in wif:
+                wif = wif.split(":")[1]
+
+            print(f"Найден!")
+            print(f"Адрес: {addr}")
+            print(f"WIF: {wif}")
+
+            try:
+                # Автоматически определяем сеть по префиксу WIF
+                # WIF начинающийся с 'c' - это testnet
+                if wif.startswith('c'):
+                    network = 'testnet'
+                else:
+                    network = 'bitcoin'
+
+                # Создаем ключ
+                key = Key(wif, network=network)
+
+                print(f"\nБазовая информация:")
+                print(f"Сеть: {network}")
+                print(f"Приватный ключ (hex): {key.private_hex}")
+                print(f"Публичный ключ: {key.public_hex}")
+                print(f"WIF: {key.wif()}")
+
+                # Получаем P2PKH адрес (начинается с m/n для testnet)
+                p2pkh_addr = key.address()
+                print(f"P2PKH адрес: {p2pkh_addr}")
+
+                # Получаем P2WPKH (segwit) адрес
+                # В bitcoinlib нужно использовать метод segwit_address()
+                segwit_addr = key.segwit_address()
+                print(f"Segwit (P2WPKH) адрес: {segwit_addr}")
+
+                print(f"\nПроверка...")
+                print(f"Ожидаемый адрес (из Electrum): {addr}")
+                print(f"Полученный Segwit адрес: {segwit_addr}")
+
+                if segwit_addr.lower() == target_addr:
+                    print("✓ WIF соответствует segwit адресу!")
+
+                    # Дополнительная информация
+                    print(f"\nДополнительная информация:")
+                    print(f"Тип адреса: {key.address_type}")
+
+                    # Проверим другие форматы адресов
+                    print(f"\nВсе форматы адресов для этого ключа:")
+                    print(f"1. P2PKH (legacy): {p2pkh_addr}")
+                    print(f"2. P2SH-P2WPKH (nested): {key.address(encoding='p2sh-segwit')}")
+                    print(f"3. P2WPKH (native segwit): {segwit_addr}")
+
+                else:
+                    print(f"✗ WIF не соответствует segwit адресу")
+                    print(f"Разница: {segwit_addr.lower() == target_addr}")
+
+            except Exception as e:
+                print(f"Ошибка при проверке WIF: {e}")
+                import traceback
+                traceback.print_exc()
+
+            return
+
+    print("Адрес не найден в экспортированных ключах")
+
+
+if __name__ == "__main__":
+    main()
